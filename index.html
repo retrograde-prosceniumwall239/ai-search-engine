@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Search Engine — Vector Index Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">◈</span>
+      <div class="brand-text">
+        <span class="brand-title">AI Search</span>
+        <span class="brand-sub">vector index console</span>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item is-active" data-view="search">
+        <span class="nav-index">01</span> Search
+      </button>
+      <button class="nav-item" data-view="documents">
+        <span class="nav-index">02</span> Documents
+      </button>
+      <button class="nav-item" data-view="compare">
+        <span class="nav-index">03</span> Compare
+      </button>
+      <button class="nav-item" data-view="history">
+        <span class="nav-index">04</span> History
+      </button>
+      <button class="nav-item" data-view="settings">
+        <span class="nav-index">05</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="status-row">
+        <span class="status-dot" id="healthDot"></span>
+        <span id="healthLabel">checking…</span>
+      </div>
+      <div class="provider-chip" id="activeProviderChip">chroma</div>
+      <button class="theme-toggle" id="themeToggle" title="Toggle dark / light">☾</button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <!-- ---------- SEARCH VIEW ---------- -->
+    <section class="view is-active" id="view-search">
+      <header class="view-header">
+        <h1>Semantic Search</h1>
+        <p class="view-sub">Query your indexed documents by <em>meaning</em>, not just keywords.</p>
+      </header>
+
+      <form class="search-bar" id="searchForm">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Ask something your documents can answer…"
+          autocomplete="off"
+          required
+        />
+        <select id="searchMode" title="Search mode">
+          <option value="semantic">Semantic</option>
+          <option value="similarity">Similarity</option>
+          <option value="metadata">Metadata</option>
+          <option value="hybrid">Hybrid</option>
+        </select>
+        <select id="searchProvider" title="Vector database">
+          <option value="chroma">Chroma</option>
+          <option value="pinecone">Pinecone</option>
+          <option value="qdrant">Qdrant</option>
+        </select>
+        <button type="submit" class="btn-primary">Search</button>
+      </form>
+
+      <div class="search-meta" id="searchMeta"></div>
+
+      <div class="answer-card" id="answerCard" hidden>
+        <div class="answer-label">Generated Answer</div>
+        <div class="answer-body" id="answerBody"></div>
+      </div>
+
+      <div class="results-list" id="resultsList"></div>
+    </section>
+
+    <!-- ---------- DOCUMENTS VIEW ---------- -->
+    <section class="view" id="view-documents">
+      <header class="view-header">
+        <h1>Documents</h1>
+        <p class="view-sub">Upload PDF, TXT, or Markdown files to index them for search.</p>
+      </header>
+
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.markdown" hidden />
+        <div class="upload-icon">⇪</div>
+        <p><strong>Drop a file here</strong> or click to browse</p>
+        <p class="upload-hint">.pdf · .txt · .md</p>
+      </div>
+
+      <div class="upload-status" id="uploadStatus"></div>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Chunks</th>
+            <th>Provider</th>
+            <th>Uploaded</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="docTableBody">
+          <tr><td colspan="7" class="empty-row">No documents yet — upload one above.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ---------- COMPARE VIEW ---------- -->
+    <section class="view" id="view-compare">
+      <header class="view-header">
+        <h1>Compare Vector Databases</h1>
+        <p class="view-sub">Run one query across Chroma, Pinecone, and Qdrant side by side.</p>
+      </header>
+
+      <form class="search-bar" id="compareForm">
+        <input type="text" id="compareInput" placeholder="Query to compare across providers…" required />
+        <button type="submit" class="btn-primary">Compare</button>
+      </form>
+
+      <div class="compare-grid" id="compareGrid"></div>
+    </section>
+
+    <!-- ---------- HISTORY VIEW ---------- -->
+    <section class="view" id="view-history">
+      <header class="view-header">
+        <h1>Search History</h1>
+        <p class="view-sub">Your most recent queries across all providers and modes.</p>
+      </header>
+
+      <table class="doc-table">
+        <thead>
+          <tr>
+            <th>Query</th>
+            <th>Mode</th>
+            <th>Provider</th>
+            <th>Results</th>
+            <th>When</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          <tr><td colspan="5" class="empty-row">No searches yet.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ---------- SETTINGS VIEW ---------- -->
+    <section class="view" id="view-settings">
+      <header class="view-header">
+        <h1>Settings</h1>
+        <p class="view-sub">Configuration is read from your <code>.env</code> file at startup.</p>
+      </header>
+
+      <div class="settings-grid" id="settingsGrid"></div>
+
+      <div class="settings-note">
+        <p><strong>To change the default vector database provider:</strong> edit
+        <code>VECTOR_DB_PROVIDER</code> in <code>.env</code> and restart the app — or
+        select a different provider per-search from the dropdown on the Search tab.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
